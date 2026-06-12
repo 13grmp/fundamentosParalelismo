@@ -1,8 +1,16 @@
 [ {
-  "id" : "3c321086-6b00-477d-b028-723cf06ff99b",
-  "name" : "Gabriel(ADMIN)",
+  "id" : "47a46a6c-8270-4c78-b88f-f8b1d35b746e",
+  "name" : "Gabriel(Admin)",
   "email" : "gabriel@admin.com",
-  "passwordHash" : "AofHnnyi29PwE19v_d3cOLOxnD_ss9hKuCwTnV54UgI",
-  "passwordSalt" : "rc97Ild4nXTwplPXsnjCyQ",
+  "passwordHash" : "pqCJGvpUNf8kGd4D8QcAVH5XaqbBbFSS7tDRvOdnw64",
+  "passwordSalt" : "wrZKIQezKP839qykoBn2-g",
   "role" : "ADMIN"
-}]
+}, 
+{
+  "id" : "0acb2d07-ad31-476c-b0cd-8364863d39e7",
+  "name" : "Gabriel(User)",
+  "email" : "gabriel@user.com",
+  "passwordHash" : "gBu7BOIZNuJzs2pNC98vGWQz4HS8YLMVtZtrqil6pDE",
+  "passwordSalt" : "eQUN_7Cjn47e-JD2xtAMMg",
+  "role" : "USER"
+} ] 
