@@ -1,0 +1,103 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [ 5 0 R 7 0 R ] /Count 2 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 5568 >>
+stream
+BT /F2 18 Tf 1 0 0 1 50 795 Tm (Relatorio - Mini E-commerce Distribuido) Tj ET
+BT /F2 12.5 Tf 1 0 0 1 50 763 Tm (Visao geral) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 746 Tm (O projeto foi implementado como um mini e-commerce distribuido composto por quatro aplicacoes) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 732.5 Tm (Spring Boot independentes: gateway, users, products e orders. O gateway roda na porta 8080 e) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 719 Tm (funciona como ponto unico de entrada. Os demais servicos rodam nas portas 5001, 5002 e 5003,) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 705.5 Tm (respectivamente. A persistencia foi simplificada com arquivos JSON locais para manter a execucao) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 692 Tm (leve e sem dependencia obrigatoria de Docker ou banco externo.) Tj ET
+BT /F2 12.5 Tf 1 0 0 1 50 668.5 Tm (Comunicacao entre microsservicos) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 651.5 Tm (A comunicacao externa acontece sempre pelo API Gateway. O Gateway recebe requisicoes em rotas como) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 638 Tm (/users/**, /products/** e /orders/**, identifica o servico responsavel e encaminha a chamada HTTP) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 624.5 Tm (para a URL interna configurada por variaveis de ambiente. Durante esse encaminhamento, headers) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 611 Tm (importantes, como Authorization, sao preservados para que os servicos internos consigam validar o) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 597.5 Tm (JWT.) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 580 Tm (Existe tambem comunicacao direta entre servicos no fluxo de pedidos. Ao criar um pedido, o servico) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 566.5 Tm (orders consulta o servico products por HTTP para confirmar que o produto informado existe antes de) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 553 Tm (gravar o pedido. Dessa forma, o pedido nao depende de uma copia local do catalogo de produtos e) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 539.5 Tm (usa o servico de produtos como fonte da informacao.) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 522 Tm (O Gateway possui heartbeat periodico para os servicos internos. A cada intervalo configurado, ele) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 508.5 Tm (chama os endpoints /health de usuarios, produtos e pedidos. Depois de duas falhas consecutivas, o) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 495 Tm (servico e marcado como indisponivel. Quando volta a responder, o Gateway registra a recuperacao e) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 481.5 Tm (libera novamente o roteamento.) Tj ET
+BT /F2 12.5 Tf 1 0 0 1 50 458 Tm (Replicacao e consistencia de produtos) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 441 Tm (O servico products usa duas replicas de armazenamento em arquivos JSON: uma primaria e uma) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 427.5 Tm (secundaria. As leituras usam uma estrategia simples de round-robin entre as replicas, distribuindo) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 414 Tm (as consultas entre os arquivos disponiveis. Ja as escritas seguem consistencia forte: a criacao de) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 400.5 Tm (um produto so retorna sucesso depois que as duas replicas foram gravadas.) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 383 Tm (Essa escolha evita que o cliente receba confirmacao de um produto que existe em apenas uma) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 369.5 Tm (replica. Se qualquer uma das gravacoes falhar, a operacao e tratada como erro e a criacao nao e) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 356 Tm (confirmada. Em um sistema real, essa abordagem poderia ser substituida por replicacao assincrona,) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 342.5 Tm (filas ou consenso, mas para este projeto ela deixa o comportamento previsivel e facil de testar.) Tj ET
+BT /F2 12.5 Tf 1 0 0 1 50 319 Tm (Queda do servico de pedidos) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 302 Tm (Se o servico orders cair, o Gateway continua funcionando e as rotas de usuarios e produtos) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 288.5 Tm (permanecem disponiveis. Apos o limite de falhas do heartbeat, o Gateway marca orders como) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 275 Tm (indisponivel. Nesse estado, qualquer chamada para /orders/** recebe 503 Service Unavailable, sem) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 261.5 Tm (tentar encaminhar a requisicao para um servico que ja foi detectado como fora do ar.) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 244 Tm (Quando o servico de pedidos e iniciado novamente e volta a responder ao /health, o Gateway) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 230.5 Tm (registra a recuperacao e passa a encaminhar as chamadas de pedidos outra vez. Assim, a falha fica) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 217 Tm (isolada no servico afetado e nao bloqueia todo o e-commerce.) Tj ET
+BT /F2 12.5 Tf 1 0 0 1 50 193.5 Tm (Uso de JWT e bloqueio por perfil) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 176.5 Tm (O servico users gera JWT no login contendo dados como userId, email, role e expiracao. Esse token) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 163 Tm (e enviado pelo cliente no header Authorization: Bearer. Os servicos que precisam de autenticacao) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 149.5 Tm (validam a assinatura do token usando a mesma chave configurada em JWT_SECRET.) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 132 Tm (Para a criacao de produtos, o servico products exige que o token seja valido e que o campo role) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 118.5 Tm (seja admin. Um usuario comum, com role=user, consegue consultar produtos e criar pedidos, mas ao) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 105 Tm (tentar enviar POST /products recebe erro de autorizacao. Isso separa operacoes administrativas das) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 91.5 Tm (operacoes comuns do cliente.) Tj ET
+endstream
+endobj
+7 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 8 0 R >>
+endobj
+8 0 obj
+<< /Length 1525 >>
+stream
+BT /F2 12.5 Tf 1 0 0 1 50 789 Tm (Limitacoes em relacao a um e-commerce real) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 772 Tm (Esta implementacao atende ao objetivo academico de demonstrar microsservicos, gateway, JWT,) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 758.5 Tm (replicacao simples e heartbeat, mas ainda possui limitacoes importantes. A persistencia em JSON) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 745 Tm (nao substitui um banco transacional, nao ha controle real de concorrencia para estoque, nao existe) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 731.5 Tm (pagamento, carrinho, entrega, cancelamento ou historico detalhado. Tambem nao ha observabilidade) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 718 Tm (completa com metricas, tracing distribuido ou painel de monitoramento.) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 700.5 Tm (Outro ponto e que o JWT usa uma chave de ambiente simples e nao ha rotacao de chaves, refresh) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 687 Tm (token ou revogacao de sessoes. A replicacao de produtos ocorre dentro do proprio servico em) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 673.5 Tm (arquivos locais, enquanto um ambiente de producao usaria replicas independentes, banco) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 660 Tm (distribuido, mensageria ou outro mecanismo resiliente. Mesmo assim, a arquitetura criada demonstra) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 646.5 Tm (os principais conceitos pedidos: separacao por servico, comunicacao HTTP, autorizacao por perfil,) Tj ET
+BT /F1 10.5 Tf 1 0 0 1 50 633 Tm (tolerancia parcial a falhas e documentacao de execucao.) Tj ET
+endstream
+endobj
+xref
+0 9
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000123 00000 n 
+0000000193 00000 n 
+0000000268 00000 n 
+0000000404 00000 n 
+0000006024 00000 n 
+0000006160 00000 n 
+trailer
+<< /Size 9 /Root 1 0 R >>
+startxref
+7737
+%%EOF

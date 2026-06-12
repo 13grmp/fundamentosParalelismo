@@ -1,0 +1,16 @@
+com\service\gabriel\orders\OrdersApplication.class
+com\service\gabriel\orders\service\JwtService.class
+com\service\gabriel\orders\repository\JsonOrderRepository.class
+com\service\gabriel\orders\service\OrderService.class
+com\service\gabriel\orders\controller\OrderController.class
+com\service\gabriel\orders\controller\HealthController.class
+com\service\gabriel\orders\dto\CreateOrderRequest.class
+com\service\gabriel\orders\dto\HealthResponse.class
+com\service\gabriel\orders\model\Role.class
+com\service\gabriel\orders\controller\RestExceptionHandler.class
+com\service\gabriel\orders\model\Order.class
+com\service\gabriel\orders\model\OrderStatus.class
+com\service\gabriel\orders\security\AuthenticatedUser.class
+com\service\gabriel\orders\dto\OrderResponse.class
+com\service\gabriel\orders\client\ProductClient.class
+com\service\gabriel\orders\dto\ApiResponse.class

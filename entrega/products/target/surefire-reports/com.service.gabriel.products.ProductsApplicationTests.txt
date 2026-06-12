@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.service.gabriel.products.ProductsApplicationTests
+-------------------------------------------------------------------------------
+Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.000 s -- in com.service.gabriel.products.ProductsApplicationTests

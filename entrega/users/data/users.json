@@ -1,0 +1,15 @@
+[ {
+  "id" : "3c321086-6b00-477d-b028-723cf06ff99b",
+  "name" : "Admin",
+  "email" : "admin@local",
+  "passwordHash" : "AofHnnyi29PwE19v_d3cOLOxnD_ss9hKuCwTnV54UgI",
+  "passwordSalt" : "rc97Ild4nXTwplPXsnjCyQ",
+  "role" : "ADMIN"
+}, {
+  "id" : "8cd66984-a666-47c9-9f38-41284e9e45f9",
+  "name" : "Usuario Integracao",
+  "email" : "usuario.integracao.20260609153239@example.com",
+  "passwordHash" : "hSnHrzLn1N-Bxhjv8XTtFGT8i_6Ysr69puVcS68vF-c",
+  "passwordSalt" : "F2oRB7--X4tpzt0NOqviWw",
+  "role" : "USER"
+} ]

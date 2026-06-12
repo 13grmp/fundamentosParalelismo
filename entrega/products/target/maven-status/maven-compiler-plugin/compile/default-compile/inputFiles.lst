@@ -1,0 +1,15 @@
+C:\Users\gabbr\Desktop\fundamento\entrega\products\src\main\java\com\service\gabriel\products\controller\HealthController.java
+C:\Users\gabbr\Desktop\fundamento\entrega\products\src\main\java\com\service\gabriel\products\controller\ProductController.java
+C:\Users\gabbr\Desktop\fundamento\entrega\products\src\main\java\com\service\gabriel\products\controller\RestExceptionHandler.java
+C:\Users\gabbr\Desktop\fundamento\entrega\products\src\main\java\com\service\gabriel\products\dto\ApiResponse.java
+C:\Users\gabbr\Desktop\fundamento\entrega\products\src\main\java\com\service\gabriel\products\dto\CreateProductRequest.java
+C:\Users\gabbr\Desktop\fundamento\entrega\products\src\main\java\com\service\gabriel\products\dto\HealthResponse.java
+C:\Users\gabbr\Desktop\fundamento\entrega\products\src\main\java\com\service\gabriel\products\dto\ProductResponse.java
+C:\Users\gabbr\Desktop\fundamento\entrega\products\src\main\java\com\service\gabriel\products\dto\ReserveStockRequest.java
+C:\Users\gabbr\Desktop\fundamento\entrega\products\src\main\java\com\service\gabriel\products\model\Product.java
+C:\Users\gabbr\Desktop\fundamento\entrega\products\src\main\java\com\service\gabriel\products\model\Role.java
+C:\Users\gabbr\Desktop\fundamento\entrega\products\src\main\java\com\service\gabriel\products\ProductsApplication.java
+C:\Users\gabbr\Desktop\fundamento\entrega\products\src\main\java\com\service\gabriel\products\repository\JsonProductRepository.java
+C:\Users\gabbr\Desktop\fundamento\entrega\products\src\main\java\com\service\gabriel\products\security\AuthenticatedUser.java
+C:\Users\gabbr\Desktop\fundamento\entrega\products\src\main\java\com\service\gabriel\products\service\JwtService.java
+C:\Users\gabbr\Desktop\fundamento\entrega\products\src\main\java\com\service\gabriel\products\service\ProductService.java

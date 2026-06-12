@@ -1,0 +1,87 @@
+services:
+  users:
+    build:
+      context: ./users
+    image: mini-ecommerce-users:local
+    container_name: mini-ecommerce-users
+    environment:
+      USERS_PORT: 5001
+      JWT_SECRET: ${JWT_SECRET:-docker-dev-secret}
+      USERS_STORAGE_FILE: /app/data/users.json
+      USERS_ADMIN_SEED_ENABLED: "true"
+      USERS_ADMIN_NAME: ${USERS_ADMIN_NAME:-Admin}
+      USERS_ADMIN_EMAIL: ${USERS_ADMIN_EMAIL:-admin@local}
+      USERS_ADMIN_PASSWORD: ${USERS_ADMIN_PASSWORD:-admin123}
+    ports:
+      - "5001:5001"
+    volumes:
+      - users-data:/app/data
+    networks:
+      - ecommerce-net
+
+  products:
+    build:
+      context: ./products
+    image: mini-ecommerce-products:local
+    container_name: mini-ecommerce-products
+    environment:
+      PRODUCTS_PORT: 5002
+      JWT_SECRET: ${JWT_SECRET:-docker-dev-secret}
+      PRODUCTS_PRIMARY_STORAGE_FILE: /app/data/products-primary.json
+      PRODUCTS_REPLICA_STORAGE_FILE: /app/data/products-replica.json
+    ports:
+      - "5002:5002"
+    volumes:
+      - products-data:/app/data
+    networks:
+      - ecommerce-net
+
+  orders:
+    build:
+      context: ./orders
+    image: mini-ecommerce-orders:local
+    container_name: mini-ecommerce-orders
+    depends_on:
+      - products
+    environment:
+      ORDERS_PORT: 5003
+      JWT_SECRET: ${JWT_SECRET:-docker-dev-secret}
+      PRODUCTS_SERVICE_URL: http://products:5002
+      ORDERS_STORAGE_FILE: /app/data/orders.json
+    ports:
+      - "5003:5003"
+    volumes:
+      - orders-data:/app/data
+    networks:
+      - ecommerce-net
+
+  gateway:
+    build:
+      context: ./gateway
+    image: mini-ecommerce-gateway:local
+    container_name: mini-ecommerce-gateway
+    depends_on:
+      - users
+      - products
+      - orders
+    environment:
+      GATEWAY_PORT: 8080
+      JWT_SECRET: ${JWT_SECRET:-docker-dev-secret}
+      USERS_SERVICE_URL: http://users:5001
+      PRODUCTS_SERVICE_URL: http://products:5002
+      ORDERS_SERVICE_URL: http://orders:5003
+      HEARTBEAT_INTERVAL_MS: 5000
+      HEARTBEAT_MAX_FAILURES: 2
+    ports:
+      - "8080:8080"
+    networks:
+      - ecommerce-net
+
+networks:
+  ecommerce-net:
+    driver: bridge
+
+volumes:
+  users-data:
+  products-data:
+  orders-data:

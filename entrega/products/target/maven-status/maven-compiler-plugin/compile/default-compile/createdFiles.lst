@@ -1,0 +1,15 @@
+com\service\gabriel\products\dto\ReserveStockRequest.class
+com\service\gabriel\products\ProductsApplication.class
+com\service\gabriel\products\repository\JsonProductRepository.class
+com\service\gabriel\products\dto\CreateProductRequest.class
+com\service\gabriel\products\dto\ProductResponse.class
+com\service\gabriel\products\controller\HealthController.class
+com\service\gabriel\products\model\Product.class
+com\service\gabriel\products\model\Role.class
+com\service\gabriel\products\dto\ApiResponse.class
+com\service\gabriel\products\controller\RestExceptionHandler.class
+com\service\gabriel\products\dto\HealthResponse.class
+com\service\gabriel\products\service\JwtService.class
+com\service\gabriel\products\controller\ProductController.class
+com\service\gabriel\products\security\AuthenticatedUser.class
+com\service\gabriel\products\service\ProductService.class
