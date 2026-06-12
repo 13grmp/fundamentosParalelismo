@@ -1,187 +1,300 @@
-# Atividade 1 — Mini E-commerce Distribuído
+# README de Execucao - Mini E-commerce Distribuído
 
-Valor: 3 pontos
-INDIVIDUAL
+Este projeto implementa um mini e-commerce distribuido com quatro aplicacoes Spring Boot:
 
----
+- `gateway`: API Gateway, porta `8080`.
+- `users`: servico de usuarios, porta `5001`.
+- `products`: servico de produtos, porta `5002`.
+- `orders`: servico de pedidos, porta `5003`.
 
-## Contexto
+O Gateway e o ponto de entrada único para os testes. Use sempre `http://localhost:8080` nas chamadas externas.
 
-Sistemas de e-commerce reais são construídos sobre arquiteturas distribuídas compostas por diversos microsserviços independentes. Nesta atividade, você irá implementar uma versão simplificada desse tipo de sistema, aplicando na prática conceitos fundamentais de sistemas distribuídos: decomposição em microsserviços, replicação de dados, tolerância a falhas e segurança entre serviços.
+## Pre-requisitos
 
----
+- Java 17 instalado.
+- Maven Wrapper incluido em cada pasta (`mvnw.cmd`).
+- Docker.
+- O projeto usa arquivos JSON como armazenamento.
 
-## Objetivo
+## Variaveis de ambiente
 
-Construir um sistema de e-commerce mínimo composto por três microsserviços que se comunicam entre si, com replicação básica de dados, detecção de falha por heartbeat e autenticação via JWT.
+As aplicacoes funcionam com valores padrao, mas estas variaveis podem ser alteradas:
 
----
+| Variavel | Padrao | Uso |
+|---|---:|---|
+| `JWT_SECRET` | `dev-secret` | Chave usada para assinar e validar JWT. |
+| `GATEWAY_PORT` | `8080` | Porta do Gateway. |
+| `USERS_PORT` | `5001` | Porta do servico de usuarios. |
+| `PRODUCTS_PORT` | `5002` | Porta do servico de produtos. |
+| `ORDERS_PORT` | `5003` | Porta do servico de pedidos. |
+| `USERS_SERVICE_URL` | `http://localhost:5001` | URL interna do servico de usuarios para o Gateway. |
+| `PRODUCTS_SERVICE_URL` | `http://localhost:5002` | URL interna do servico de produtos para o Gateway e pedidos. |
+| `ORDERS_SERVICE_URL` | `http://localhost:5003` | URL interna do servico de pedidos para o Gateway. |
+| `USERS_STORAGE_FILE` | `data/users.json` | Arquivo JSON de usuarios. |
+| `PRODUCTS_PRIMARY_STORAGE_FILE` | `data/products-primary.json` | Replica primaria de produtos. |
+| `PRODUCTS_REPLICA_STORAGE_FILE` | `data/products-replica.json` | Replica secundaria de produtos. |
+| `ORDERS_STORAGE_FILE` | `data/orders.json` | Arquivo JSON de pedidos. |
+| `HEARTBEAT_INTERVAL_MS` | `5000` | Intervalo do heartbeat do Gateway. |
+| `HEARTBEAT_MAX_FAILURES` | `2` | Falhas consecutivas antes do Gateway marcar o servico como indisponivel. |
 
-## Arquitetura Esperada
+O servico `users` cria um admin inicial automaticamente:
 
-```
-Cliente (curl / Postman / script)
-│
-┌─────────▼──────────┐
-│ API Gateway │ ← ponto de entrada único
-└──┬──────┬──────┬───┘
-│ │ │
-┌──────▼─┐ ┌──▼───┐ ┌▼────────┐
-│Usuários│ │Produ-│ │Pedidos │
-│:5001 │ │tos │ │:5003 │
-└────────┘ │:5002 │ └─────────┘
-└──────┘
-```
+- Email: `gabriel@admin.com`
+- Senha: `admin123`
 
-Cada microsserviço possui sua própria base de dados (arquivo JSON, SQLite ou similar). O API Gateway repassa requisições autenticadas aos serviços corretos.
+## Como subir os servicos
 
----
+Abra quatro terminais na raiz do projeto e execute:
 
-## O que Deve Ser Implementado
-
-### 1. Microsserviços (obrigatório)
-
-Implemente os três serviços abaixo. Cada um deve rodar em porta separada e ser iniciado de forma independente.
-
-#### Serviço de Usuários (`/users`)
-| Endpoint | Método | Descrição |
-|---|---|---|
-| `/users/register` | POST | Cria novo usuário (nome, email, senha hash) |
-| `/users/login` | POST | Autentica e retorna JWT |
-| `/users/:id` | GET | Retorna dados do usuário (requer JWT) |
-
-#### Serviço de Produtos (`/products`)
-| Endpoint | Método | Descrição |
-|---|---|---|
-| `/products` | GET | Lista todos os produtos |
-| `/products/:id` | GET | Detalha um produto |
-| `/products` | POST | Cria produto (requer JWT de admin) |
-
-#### Serviço de Pedidos (`/orders`)
-| Endpoint | Método | Descrição |
-|---|---|---|
-| `/orders` | POST | Cria pedido vinculando usuário e produto |
-| `/orders/:userId` | GET | Lista pedidos de um usuário (requer JWT) |
-
----
-
-### 2. Replicação Simples (obrigatório)
-
-O **Serviço de Produtos** deve manter **duas réplicas** do seu armazenamento de dados (ex: dois arquivos JSON ou dois processos rodando nas portas 5002 e 5012).
-
-- Toda escrita (criação/atualização de produto) deve ser propagada para ambas as réplicas antes de confirmar sucesso ao cliente.
-- Toda leitura pode ser feita em qualquer réplica (leitura distribuída por round-robin simples).
-- Documente no relatório qual estratégia de consistência foi adotada (consistência forte ou eventual) e justifique.
-
----
-
-### 3. Detecção de Falha por Heartbeat (obrigatório)
-
-O **API Gateway** deve implementar um mecanismo simples de heartbeat:
-
-- A cada intervalo fixo (ex: 5 segundos), o gateway envia uma requisição `GET /health` a cada microsserviço.
-- Se um serviço não responder em até 2 tentativas, o gateway deve:
-- Registrar a falha em log com timestamp.
-- Retornar ao cliente uma mensagem de erro clara (`503 Service Unavailable`) caso esse serviço seja requisitado.
-- Quando o serviço voltar a responder, o gateway deve registrar a recuperação em log.
-
-Cada microsserviço deve expor o endpoint `GET /health` retornando `{ "status": "ok" }`.
-
----
-
-### 4. Segurança com JWT (obrigatório)
-
-- O login no Serviço de Usuários gera um token JWT assinado com uma chave secreta.
-- O token deve conter: `userId`, `email`, `role` (user ou admin) e `exp` (expiração).
-- Todos os endpoints marcados como "requer JWT" devem validar o token antes de processar a requisição.
-- O API Gateway deve repassar o token nos headers para os serviços internos.
-- Senhas devem ser armazenadas com hash (ex: bcrypt ou SHA-256).
-
----
-
-## Entregáveis
-
-```
-entrega/
-├── gateway/ ← código do API Gateway
-├── users/ ← código do Serviço de Usuários
-├── products/ ← código do Serviço de Produtos
-├── orders/ ← código do Serviço de Pedidos
-├── docker-compose.yml (opcional, mas valorizado)
-├── README_execucao.md ← instruções para rodar o projeto
-└── relatorio.pdf ← relatório escrito (ver abaixo)
+```powershell
+cd users
+.\mvnw.cmd spring-boot:run
 ```
 
-### Relatório (1 a 2 páginas)
+```powershell
+cd products
+.\mvnw.cmd spring-boot:run
+```
 
-O relatório deve responder objetivamente:
+```powershell
+cd orders
+.\mvnw.cmd spring-boot:run
+```
 
-1. Como a comunicação entre os microsserviços foi implementada? (REST, gRPC, fila, etc.)
-2. Qual estratégia de consistência foi adotada na replicação? Forte ou eventual? Por quê?
-3. O que acontece com o sistema se o Serviço de Pedidos cair? O restante continua funcionando?
-4. Como o JWT garante que um usuário comum não consiga criar produtos?
-5. Quais limitações a sua implementação possui em relação a um sistema real de produção?
+```powershell
+cd gateway
+.\mvnw.cmd spring-boot:run
+```
 
----
+## Como subir com Docker Compose
 
-## Tecnologias Permitidas
+Na raiz do projeto, execute:
 
-Qualquer linguagem ou framework. Sugestões: Node.js + Express, Python + Flask/FastAPI, Go. A comunicação entre serviços deve ser feita via HTTP/REST (mínimo). O uso de Docker é opcional, mas valorizado.
+```powershell
+docker compose up --build
+```
 
----
+O Compose sobe os quatro servicos na mesma rede Docker:
 
-## Critérios de Avaliação
+- `gateway`:  `http://localhost:8080`;
+- `users`:  `http://localhost:5001`;
+- `products`:  `http://localhost:5002`;
+- `orders`:  `http://localhost:5003`.
 
-Consulte a **Rubrica Geral da Atividade** disponível no Classroom.
+As URLs internas usadas pelos containers sao configuradas automaticamente:
 
----
+- `USERS_SERVICE_URL=http://users:5001`
+- `PRODUCTS_SERVICE_URL=http://products:5002`
+- `ORDERS_SERVICE_URL=http://orders:5003`
 
-## Dicas
+Os dados JSON ficam em volumes Docker nomeados (`users-data`, `products-data` e `orders-data`). Para não serem apagados quando o docker for parado:
 
-- Comece pelos microsserviços individualmente antes de integrá-los ao gateway.
-- Use variáveis de ambiente para armazenar a chave secreta do JWT e portas dos serviços.
-- Para simular falha, basta derrubar um dos serviços durante os testes e observar o comportamento do heartbeat.
-- Não é necessário banco de dados relacional — arquivos JSON ou SQLite são suficientes.
+```powershell
+docker compose down
+```
 
+Para parar e limpar os volumes:
 
+```powershell
+docker compose down -v
+```
 
+# Exemplos de chamadas
 
-## Penalidades
+## Health
 
-| Situação | Desconto |
-|---|---|
-| Sistema não executa (erro na inicialização) | −1,0 pt |
-| Ausência do `README_execucao.md` ou instruções insuficientes para rodar | −0,3 pt |
-| Plágio identificado (total ou parcial entre grupos) | Nota 0 para todos os envolvidos |
-| Entrega em atraso (por dia corrido) | −0,3 pt/dia (máximo −1,0 pt) |
+```powershell
+Gateway
+http://localhost:8080
 
----
+Users
+http://localhost:5001
 
-## Bônus (não ultrapassa 3,0 pt)
+Products
+http://localhost:5002
 
-| Situação | Acréscimo |
-|---|---|
-| Uso de Docker Compose funcional para subir toda a infraestrutura | +0,2 pt |
-| TLS/HTTPS na comunicação entre serviços | +0,2 pt |
-| Interface visual (dashboard HTML simples) para monitoramento | +0,1 pt |
+Orders
+http://localhost:5003
+```
 
----
+### Health
+```powershell
+/health
+```
 
-## Critérios de Execução Mínima
+## Users
 
-Para ser avaliado, o projeto deve:
+```powershell
+Gateway
+http://localhost:8080
 
-1. Ser iniciado seguindo as instruções do `README_execucao.md` sem erros críticos.
-2. Ter ao menos **dois microsserviços distintos** em execução e se comunicando.
-3. Ter o relatório entregue junto com o código.
+Users
+http://localhost:5001
+```
 
-Projetos que não atendam a esses requisitos mínimos receberão nota máxima de **1,0 pt**, independentemente do código.
+### Cadastrar
 
----
+```powershell
+Path
+/users/register
 
-## Formato de Entrega
+Método
+POST
 
-- Compactado em `.zip` com o nome `AtividadeN_NomeAluno.zip` (ex: `Atividade2_JoaoSilva.zip`).
-- Ou link para repositório **privado** no GitHub com acesso concedido ao professor ou público. 
-- O relatório deve ser entregue em PDF dentro do pacote.
-- **Prazo:** conforme definido no Classroom.
+Payload
+{
+  "name":"Gabriel(User)",
+  "email":"gabriel@user.com",
+  "password":"user123"
+}
+```
+
+### Login
+
+```powershell
+Path
+/users/login
+
+Método
+POST
+
+Payload
+{
+  "email":"gabriel@admin.com",
+  "password":"admin123"
+}
+```
+
+### Buscar por ID
+
+```powershell
+Path
+/users/ID_DO_USUARIO
+
+Método
+GET
+
+Token
+Authorization: Bearer TOKEN_DO_USUARIO
+```
+
+## Products
+
+```powershell
+Gateway
+http://localhost:8080
+
+Products
+http://localhost:5002
+```
+
+### Cadastrar
+
+```powershell
+Path
+/products
+
+Método
+POST
+
+Token
+Authorization: Bearer TOKEN_DO_ADMIN(TEM QUE SER OBRIGATORIAMENTE ADMIN)
+
+Payload
+{
+  "name":"Processador",
+  "description":"Processador AM5",
+  "price":100.00,
+  "stock":5
+}
+```
+
+### Listar produtos
+
+```powershell
+Path
+/products
+
+Método
+GET
+```
+
+### Produtos único
+
+```powershell
+Path
+/products/PRODUTO_ID
+
+Método
+GET
+```
+
+## Orders
+
+```powershell
+Gateway
+http://localhost:8080
+
+Orders
+http://localhost:5003
+```
+
+### Criar pedido
+
+```powershell
+Path
+/orders
+
+Método
+POST
+
+Token
+Authorization: Bearer TOKEN_DO_USUARIO
+
+Payload
+{
+  "productId":PRODUTO_ID,
+  "quantity":2
+}
+```
+
+### Pedidos do usuário
+
+```powershell
+Path
+/orders/ID_DO_USUARIO
+
+Método
+GET
+
+Token
+Authorization: Bearer TOKEN_DO_USUARIO
+```
+
+## Simular falha e heartbeat
+
+1. Suba todos os servicos.
+2. Pare o servico `orders`.
+3. Aguarde cerca de 10 segundos, considerando `HEARTBEAT_INTERVAL_MS=5000` e `HEARTBEAT_MAX_FAILURES=2`.
+4. Tente listar pedidos pelo Gateway:
+
+```powershell
+http://localhost:8080/orders/USUARIO_ID
+```
+
+O retorno esperado `503 Service Unavailable`.
+
+Com mensagens `"success": false` ` "message": "Servico orders indisponivel"`
+
+Depois, suba novamente o `orders`:
+
+O Gateway vai registra no log quando detecta falha e quando detecta recuperação.
+
+## Replicação de produtos
+
+O servico `products` usa duas replicas em arquivos JSON:
+
+- `data/products-primary.json`
+- `data/products-replica.json`
+
+A estrategia adotada e consistencia forte: a criação de produto só retorna sucesso depois que as duas replicas forem gravadas.
