@@ -1,4 +1,4 @@
-# README de Execucao - Mini E-commerce Distribuído
+# README de Execução - Mini E-commerce Distribuído
 
 Este projeto implementa um mini e-commerce distribuido com quatro aplicacoes Spring Boot:
 
