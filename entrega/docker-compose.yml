@@ -9,8 +9,8 @@ services:
       JWT_SECRET: ${JWT_SECRET:-docker-dev-secret}
       USERS_STORAGE_FILE: /app/data/users.json
       USERS_ADMIN_SEED_ENABLED: "true"
-      USERS_ADMIN_NAME: ${USERS_ADMIN_NAME:-Admin}
-      USERS_ADMIN_EMAIL: ${USERS_ADMIN_EMAIL:-admin@local}
+      USERS_ADMIN_NAME: ${USERS_ADMIN_NAME:-Gabriel(Admin)}
+      USERS_ADMIN_EMAIL: ${USERS_ADMIN_EMAIL:-gabriel@admin.com}
       USERS_ADMIN_PASSWORD: ${USERS_ADMIN_PASSWORD:-admin123}
     ports:
       - "5001:5001"

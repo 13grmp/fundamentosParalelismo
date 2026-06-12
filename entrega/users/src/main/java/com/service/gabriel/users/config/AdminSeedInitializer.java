@@ -18,8 +18,8 @@ public class AdminSeedInitializer implements ApplicationRunner {
 	public AdminSeedInitializer(
 			UserService userService,
 			@Value("${users.admin.seed.enabled:true}") boolean enabled,
-			@Value("${users.admin.seed.name:Admin}") String name,
-			@Value("${users.admin.seed.email:admin@local}") String email,
+			@Value("${users.admin.seed.name:Gabriel(Admin)}") String name,
+			@Value("${users.admin.seed.email:gabriel@admin.com}") String email,
 			@Value("${users.admin.seed.password:admin123}") String password) {
 		this.userService = userService;
 		this.enabled = enabled;
